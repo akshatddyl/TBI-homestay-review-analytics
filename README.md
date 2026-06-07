@@ -1,0 +1,23 @@
+# Trishul Eco-Homestays Review Analytics Platform
+
+An enterprise-grade SaaS pipeline that asynchronously analyzes, translates, and drafts multilingual responses to bulk guest reviews, empowering homestay managers to manage their reputation without manual bottlenecks.
+
+## Core Features
+
+* **Asynchronous Batch Processing:** Decouples bulk CSV/text uploads from the HTTP lifecycle to process thousands of reviews without UI timeouts or blocking the web server.
+* **Semantic Vector Caching:** Uses vector embeddings to detect highly similar reviews, instantly serving cached AI responses to drastically reduce latency and API token costs.
+* **Multilingual Analysis & Drafting:** Automatically translates guest reviews into English for the staff dashboard while drafting management responses in the guest's original native language.
+* **Human-in-the-Loop Workflow:** Puts AI drafts in a pending state for staff to review, edit, and approve, ensuring high-quality responses while building a dataset for future model fine-tuning.
+
+## Tech Stack
+
+* **Frontend:** Next.js 14 (App Router) with TypeScript
+* **Styling & UI:** Tailwind CSS, Shadcn UI, TanStack Table (Data Grid), Recharts
+* **Backend & Async:** FastAPI (Python), Celery (Workers), Redis (Message Broker)
+* **Database:** PostgreSQL (with `pgvector` extension)
+* **Auth Method:** NextAuth / JWT
+* **Deployment:** Vercel (Frontend Hosting) and Render (FastAPI Backend, Celery Workers, Redis, and Managed Postgres), containerized via Docker.
+
+---
+
+## Setup — coming soon
