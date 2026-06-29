@@ -1,10 +1,17 @@
 "use client";
 import Link from "next/link";
-import { UserCircle, Menu, Leaf, X } from "lucide-react";
-import { useState } from "react";
+import { UserCircle, Menu, Leaf, X, Sun, Moon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
@@ -26,13 +33,31 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+            )}
             <Link href="/login" className="flex items-center gap-2 px-4 py-2 rounded-md bg-muted hover:bg-primary hover:text-primary-foreground text-foreground transition-all duration-300">
               <UserCircle className="h-4 w-4" />
               <span className="text-sm font-medium">Sign In</span>
             </Link>
           </div>
 
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center space-x-2">
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+            )}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"

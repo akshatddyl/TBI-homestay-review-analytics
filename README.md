@@ -20,4 +20,25 @@ An enterprise-grade SaaS pipeline that asynchronously analyzes, translates, and 
 
 ---
 
-## Setup — coming soon
+## Setup & Running Locally
+
+### Backend Setup (FastAPI)
+
+1. **Navigate to the backend directory**:
+   ```bash
+   cd backend
+   ```
+2. **Create and activate a virtual environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. **Install the dependencies**:
+   ```bash
+   pip install fastapi uvicorn pydantic
+   ```
+4. **Run the development server**:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+   *The backend will now be accessible at `http://localhost:8000`.*

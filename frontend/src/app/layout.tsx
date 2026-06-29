@@ -3,6 +3,8 @@ import { Outfit, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/ui/Toast";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -27,14 +29,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${robotoMono.variable} dark antialiased`}
+      className={`${outfit.variable} ${robotoMono.variable} antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col bg-background text-foreground">
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+      <body className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
