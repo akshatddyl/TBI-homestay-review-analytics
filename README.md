@@ -42,3 +42,28 @@ An enterprise-grade SaaS pipeline that asynchronously analyzes, translates, and 
    uvicorn main:app --reload --port 8000
    ```
    *The backend will now be accessible at `http://localhost:8000`.*
+   
+# 🗄️ Backend Database Migration
+
+## Overview
+
+Successfully migrated the backend data layer from **in-memory arrays** to a **PostgreSQL** database hosted on **Supabase**, leveraging **SQLAlchemy ORM** for efficient and scalable relational data management.
+
+### ✨ Key Improvements
+
+- 🔄 Replaced temporary in-memory storage with a persistent **PostgreSQL** database.
+- ☁️ Integrated **Supabase** as the managed cloud database provider.
+- 🧩 Implemented **SQLAlchemy ORM** for clean, object-oriented database interactions.
+- 🔗 Established structured relational models to improve data integrity and maintainability.
+- 📈 Enhanced scalability, reliability, and long-term data persistence.
+- 🛠️ Simplified database operations through ORM abstractions, reducing raw SQL usage.
+
+### 🛠️ Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Database | PostgreSQL |
+| Hosting | Supabase |
+| ORM | SQLAlchemy |
+
+> **Result:** The backend now supports persistent, scalable, and relational data management with improved maintainability and production readiness.
