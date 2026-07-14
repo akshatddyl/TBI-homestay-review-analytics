@@ -9,18 +9,23 @@ import datetime
 from fastapi import FastAPI, HTTPException, Request, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 import models
 from database import engine, get_db
 from schemas import ReviewCreate, ReviewUpdate, ReviewOut
+from auth import router as auth_router, limiter, get_current_user
 
 # ---------------------------------------------------------------------------
 # App & middleware
 # ---------------------------------------------------------------------------
 
 app = FastAPI(title="Trishul Eco-Homestays Backend API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,6 +34,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router)
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +170,7 @@ async def get_review(review_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/api/reviews", response_model=ReviewOut, status_code=status.HTTP_201_CREATED)
-async def create_review(review_in: ReviewCreate, db: Session = Depends(get_db)):
+async def create_review(review_in: ReviewCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """Create a new review with mock translation and AI draft response."""
     new_review = models.Review(
         guest_name=review_in.guest_name,
@@ -182,7 +189,7 @@ async def create_review(review_in: ReviewCreate, db: Session = Depends(get_db)):
 
 
 @app.put("/api/reviews/{review_id}", response_model=ReviewOut, status_code=status.HTTP_200_OK)
-async def update_review(review_id: int, review_update: ReviewUpdate, db: Session = Depends(get_db)):
+async def update_review(review_id: int, review_update: ReviewUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """Partially update a review (e.g., staff editing the AI response draft or
     changing the status to approved/rejected)."""
     review = db.query(models.Review).filter(models.Review.id == review_id).first()
@@ -200,7 +207,7 @@ async def update_review(review_id: int, review_update: ReviewUpdate, db: Session
 
 
 @app.delete("/api/reviews/{review_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_review(review_id: int, db: Session = Depends(get_db)):
+async def delete_review(review_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """Delete a review by ID."""
     review = db.query(models.Review).filter(models.Review.id == review_id).first()
     if not review:

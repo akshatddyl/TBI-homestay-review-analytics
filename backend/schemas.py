@@ -5,7 +5,7 @@ schemas.py – Pydantic request/response schemas for the Review resource.
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class ReviewCreate(BaseModel):
@@ -40,3 +40,32 @@ class ReviewOut(BaseModel):
     status: str
     rating: int
     created_at: datetime.datetime
+
+
+# ---------------------------------------------------------------------------
+# Auth schemas
+# ---------------------------------------------------------------------------
+
+
+class UserCreate(BaseModel):
+    """Payload for registering a new user."""
+
+    email: EmailStr
+    password: str = Field(..., min_length=8, description="Minimum 8 characters")
+
+
+class UserResponse(BaseModel):
+    """Public user representation returned to clients."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    created_at: datetime.datetime
+
+
+class Token(BaseModel):
+    """JWT token returned after successful authentication."""
+
+    access_token: str
+    token_type: str = "bearer"

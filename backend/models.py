@@ -31,3 +31,21 @@ class Review(Base):
 
     def __repr__(self) -> str:
         return f"<Review id={self.id} guest={self.guest_name!r} homestay={self.homestay_name!r}>"
+
+
+class User(Base):
+    """Represents a registered platform user."""
+
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
+    )
+
+    def __repr__(self) -> str:
+        return f"<User id={self.id} email={self.email!r}>"
