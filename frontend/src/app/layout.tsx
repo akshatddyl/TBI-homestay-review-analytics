@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/Toast";
+import { SessionProvider } from "@/components/SessionProvider";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -39,12 +40,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-          <Toaster />
+          <SessionProvider>
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+            <Toaster />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

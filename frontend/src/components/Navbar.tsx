@@ -1,17 +1,23 @@
 "use client";
 import Link from "next/link";
-import { UserCircle, Menu, Leaf, X, Sun, Moon } from "lucide-react";
+import { UserCircle, Menu, Leaf, X, Sun, Moon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useSession, signOut } from "next-auth/react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
 
   return (
     <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
@@ -42,10 +48,33 @@ export function Navbar() {
                 {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
             )}
-            <Link href="/login" className="flex items-center gap-2 px-4 py-2 rounded-md bg-muted hover:bg-primary hover:text-primary-foreground text-foreground transition-all duration-300">
-              <UserCircle className="h-4 w-4" />
-              <span className="text-sm font-medium">Sign In</span>
-            </Link>
+            {status === "authenticated" && session?.user ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50">
+                  <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-xs font-bold text-primary uppercase">
+                      {session.user.email?.charAt(0) || "U"}
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                    {session.user.email}
+                  </span>
+                </div>
+                <button
+                  id="sign-out-btn"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-300"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className="flex items-center gap-2 px-4 py-2 rounded-md bg-muted hover:bg-primary hover:text-primary-foreground text-foreground transition-all duration-300">
+                <UserCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Sign In</span>
+              </Link>
+            )}
           </div>
 
           <div className="md:hidden flex items-center space-x-2">
@@ -76,10 +105,25 @@ export function Navbar() {
             <Link href="/" className="block px-3 py-2.5 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Home</Link>
             <Link href="/dashboard" className="block px-3 py-2.5 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>Dashboard</Link>
             <Link href="/about" className="block px-3 py-2.5 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors" onClick={() => setIsOpen(false)}>About</Link>
-            <Link href="/login" className="flex items-center gap-2 mt-4 px-3 py-2.5 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors" onClick={() => setIsOpen(false)}>
-              <UserCircle className="h-5 w-5" />
-              Sign In
-            </Link>
+            {status === "authenticated" && session?.user ? (
+              <>
+                <div className="px-3 py-2 text-sm text-muted-foreground border-t border-border mt-2 pt-3">
+                  {session.user.email}
+                </div>
+                <button
+                  onClick={() => { handleSignOut(); setIsOpen(false); }}
+                  className="flex items-center gap-2 w-full px-3 py-2.5 rounded-md text-base font-medium text-red-500 hover:bg-red-500/10 transition-colors"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className="flex items-center gap-2 mt-4 px-3 py-2.5 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors" onClick={() => setIsOpen(false)}>
+                <UserCircle className="h-5 w-5" />
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       )}
