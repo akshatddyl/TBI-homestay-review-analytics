@@ -12,6 +12,7 @@ const connectDB = require("./config/db");
 const configurePassport = require("./config/passport");
 const healthRoutes = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
+const analyzeRoutes = require("./routes/analyze.routes");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
 
@@ -98,6 +99,7 @@ app.use(passport.session());
 // ---------------------------------------------------------------------------
 app.use("/health", healthRoutes);
 app.use("/auth", authRoutes);
+app.use("/analyze", analyzeRoutes);
 
 // ---------------------------------------------------------------------------
 // Error handling
