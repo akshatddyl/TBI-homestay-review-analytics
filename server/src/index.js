@@ -4,11 +4,36 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const passport = require("passport");
 
 const connectDB = require("./config/db");
+const configurePassport = require("./config/passport");
 const healthRoutes = require("./routes/health.routes");
+const authRoutes = require("./routes/auth.routes");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
+
+// ---------------------------------------------------------------------------
+// Environment validation
+// ---------------------------------------------------------------------------
+const REQUIRED_ENV = [
+  "MONGODB_URI",
+  "SESSION_SECRET",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+  "GOOGLE_CALLBACK_URL",
+  "FRONTEND_URL",
+];
+
+const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
+if (missing.length > 0) {
+  console.error(`[ENV] Missing required environment variables:\n  ${missing.join("\n  ")}`);
+  process.exit(1);
+}
+
+const IS_PROD = process.env.NODE_ENV === "production";
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -24,7 +49,7 @@ app.use(helmet());
 app.use(express.json({ limit: "1mb" }));
 
 // CORS — support comma-separated FRONTEND_URL values
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
+const allowedOrigins = process.env.FRONTEND_URL
   .split(",")
   .map((origin) => origin.trim());
 
@@ -43,9 +68,36 @@ app.use(
 );
 
 // ---------------------------------------------------------------------------
+// Session + Passport
+// ---------------------------------------------------------------------------
+app.use(
+  session({
+    name: "perlogo_sid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: "sessions",
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: IS_PROD,
+      sameSite: IS_PROD ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    },
+  })
+);
+
+configurePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
 app.use("/health", healthRoutes);
+app.use("/auth", authRoutes);
 
 // ---------------------------------------------------------------------------
 // Error handling
