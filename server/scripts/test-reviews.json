@@ -1,0 +1,102 @@
+[
+  {
+    "review": "The breakfast was absolutely delicious and had so many local options!",
+    "expectedSentiment": "positive",
+    "expectedTheme": "food"
+  },
+  {
+    "review": "Our hosts went above and beyond to make us feel welcome.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "host"
+  },
+  {
+    "review": "Perfectly situated right next to the beautiful hiking trails.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "location"
+  },
+  {
+    "review": "The room was spotlessly clean upon our arrival.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "cleanliness"
+  },
+  {
+    "review": "Such a great stay for the price, definitely worth every penny.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "value"
+  },
+  {
+    "review": "We had an amazing overall stay and enjoyed the peaceful ambience.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "experience"
+  },
+  {
+    "review": "Dinner at the homestay was a fantastic culinary delight.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "food"
+  },
+  {
+    "review": "The weekend retreat was a perfect getaway from the busy city.",
+    "expectedSentiment": "positive",
+    "expectedTheme": "experience"
+  },
+  {
+    "review": "The owner was polite but mostly kept to themselves during our stay.",
+    "expectedSentiment": "neutral",
+    "expectedTheme": "host"
+  },
+  {
+    "review": "It's an okay spot, although it takes a bit of a drive to reach the main town.",
+    "expectedSentiment": "neutral",
+    "expectedTheme": "location"
+  },
+  {
+    "review": "The cost of the stay matched what we expected for a basic room.",
+    "expectedSentiment": "neutral",
+    "expectedTheme": "value"
+  },
+  {
+    "review": "The bathroom was decently maintained, nothing extraordinary.",
+    "expectedSentiment": "neutral",
+    "expectedTheme": "cleanliness"
+  },
+  {
+    "review": "The wifi was alright, sufficient for light browsing.",
+    "expectedSentiment": "neutral",
+    "expectedTheme": "experience"
+  },
+  {
+    "review": "We found strange odors in the room and the towels looked unwashed.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "cleanliness"
+  },
+  {
+    "review": "The staff was unresponsive to our requests and quite rude.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "host"
+  },
+  {
+    "review": "Terrible location, extremely noisy right next to a busy highway.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "location"
+  },
+  {
+    "review": "The dinner served was cold, tasteless, and very disappointing.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "food"
+  },
+  {
+    "review": "Way too expensive for such small rooms and lack of amenities.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "value"
+  },
+  {
+    "review": "The whole stay was quite miserable because the heater was broken.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "experience"
+  },
+  {
+    "review": "Breakfast had almost no options and tasted stale.",
+    "expectedSentiment": "negative",
+    "expectedTheme": "food"
+  }
+]
