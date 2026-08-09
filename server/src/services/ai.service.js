@@ -45,7 +45,7 @@ async function classifyReviews(reviews) {
   if (!reviews || reviews.length === 0) return [];
 
   const apiKey = process.env.GEMINI_API_KEY;
-  const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  const initialModelName = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
   if (!apiKey) {
     const err = new Error("AI service is currently unavailable.");
@@ -54,7 +54,6 @@ async function classifyReviews(reviews) {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `
 You are a hospitality assistant for Trishul Eco-Homestays.
@@ -74,15 +73,53 @@ Reviews:
 ${JSON.stringify(reviews, null, 2)}
 `;
 
-  try {
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0,
-        responseMimeType: "application/json",
-      },
-    });
+  // Fallback array in case the model is not found for the API version
+  const fallbackModels = [
+    initialModelName,
+    "gemini-2.0-flash",
+    "gemini-2.5-flash",
+    "gemini-3.5-flash",
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-flash-8b",
+    "gemini-2.0-flash-exp",
+    "gemini-1.5-flash",
+  ];
 
+  let result = null;
+  let lastError = null;
+
+  for (const modelName of fallbackModels) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0,
+          responseMimeType: "application/json",
+        },
+      });
+      // If we succeed, break out of the loop
+      break;
+    } catch (err) {
+      lastError = err;
+      // If it's a 404 model not found, try the next model
+      if (err.message && err.message.includes("is not found")) {
+        console.warn(`[AI Service] Model ${modelName} not found, trying next...`);
+        continue;
+      }
+      // If it's a different error (e.g. auth), break and throw
+      break;
+    }
+  }
+
+  if (!result) {
+    console.error("[AI Service] Error:", lastError ? lastError.message : "Unknown error");
+    const err = new Error("AI service is currently unavailable.");
+    err.status = 502;
+    throw err;
+  }
+
+  try {
     const responseText = result.response.text();
     
     // Safely parse JSON
